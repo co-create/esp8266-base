@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
 
 // WiFi Constants
 const char* ssid = "3easdkMrpz58kwq";
@@ -28,9 +29,27 @@ void setup () {
 void loop() {
 	if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
 		HTTPClient http;  //Declare an object of class HTTPClient
-		http.begin("http://54.153.13.255:8000/client/");  //Specify request destination
+		http.begin("http://54.153.13.255:8000/iotClient/");  //Specify request destination
     getDistance();
-		int httpCode = http.GET();                                                                  //Send the request
+    
+    StaticJsonBuffer<69> jsonBuffer;
+    char json[40];
+    sprintf(json, "{'sensor':'distance', 'data':%lf}", distance);
+    JsonObject& root = jsonBuffer.parseObject(json);
+    if(!root.success()) {
+      Serial.println("parseObject() failed");
+    } else {
+      Serial.println("JSON OK");
+    }  
+  
+    
+    http.addHeader("Content-Type", "application/json");
+    String data;
+    root.printTo(data);
+		
+		int httpCode = http.POST(data);  //Check the returning code
+
+    Serial.println(httpCode);//Send the request
 		if (httpCode > 0) { //Check the returning code
 			String payload = http.getString();   //Get the request response payload
 			Serial.println(payload);                     //Print the response payload
@@ -38,7 +57,7 @@ void loop() {
 		}
 		http.end();   //Close connection
 	}
-	delay(30000);    //Send a request every 30 seconds
+	delay(5000);    //Send a request every 30 seconds
 }
 
 void getDistance()
