@@ -29,9 +29,9 @@ void setup () {
 void loop() {
 	if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
 		HTTPClient http;  //Declare an object of class HTTPClient
-		http.begin("http://54.153.13.255:8000/iotClient/");  //Specify request destination
+		http.begin("https://dev.techgronomist.com/api/1/iotClient/");  //Specify request destination
     getDistance();
-    
+
     StaticJsonBuffer<69> jsonBuffer;
     char json[40];
     sprintf(json, "{'sensor':'distance', 'data':%lf}", distance);
@@ -40,13 +40,13 @@ void loop() {
       Serial.println("parseObject() failed");
     } else {
       Serial.println("JSON OK");
-    }  
-  
-    
+    }
+
+
     http.addHeader("Content-Type", "application/json");
     String data;
     root.printTo(data);
-		
+
 		int httpCode = http.POST(data);  //Check the returning code
 
     Serial.println(httpCode);//Send the request
