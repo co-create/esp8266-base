@@ -54,8 +54,8 @@ void loop() {
       JsonObject& root = jsonBuffer.parseObject(json);
       String data;
       root.printTo(data);
+      int httpCode = https.POST(data);
 
-      int httpCode = https.post("https://dev.techgronomist.com/api/1/iotClient/", "application/json", data);
       // httpCode will be negative on error
       if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
