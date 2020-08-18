@@ -7,7 +7,6 @@
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
-#include <ArduinoJson.h>
 #include <string>
 
 // Fingerprint for demo URL, expires on June 2, 2019, needs to be updated well before this date
@@ -15,15 +14,17 @@ const uint8_t fingerprint[33] = {0x01, 0x7D, 0xC4, 0xAB, 0x36, 0x0F, 0xD2, 0x4E,
 ESP8266WiFiMulti WiFiMulti;
 
 // DIGITAL PINS ESP8266 NODE MCU TEST
-//const int trigPin = 5;
-//const int echoPin = 4;
+const int trigPin = 5;
+const int echoPin = 4;
 
 // DIGITAL PINS ESP01 PROD
-const int trigPin = 0;
-const int echoPin = 2;
+//const int trigPin = 0;
+//const int echoPin = 2;
 
 long distanceSensorDuration = 0;
 double distance = 0;
+String mac = "";
+String distanceStr = "";
 
 void setup() {
   Serial.begin(115200);
@@ -41,6 +42,8 @@ void setup() {
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+
+  mac = WiFi.macAddress();
 }
 
 void loop() {
@@ -55,16 +58,9 @@ void loop() {
       Serial.print("[HTTPS] POST...\n");
       // start connection and send HTTP header
       getDistance();
-      /*
-      StaticJsonBuffer<69> jsonBuffer;
-      char json[40];
-      sprintf(json, "{'sensor':'distance', 'data':%lf}", distance);
-      JsonObject& root = jsonBuffer.parseObject(json);
-      String data;
-      root.printTo(data);
-      */
-      String s = to_string(42);
-      String data = "{'sensor':'distance', 'data':" + s + ", 'mac':'" + WiFi.macAddress()"'}";
+
+      String data = "{\"sensor\":\"distance\", \"data\":" + distanceStr + ", \"mac\":\"" + mac + "\"}";
+      Serial.print(data);
       int httpCode = https.POST(data);
 
       // httpCode will be negative on error
@@ -85,7 +81,7 @@ void loop() {
     }
   }
   Serial.println("Wait 5s before next round...");
-  delay(5000);
+  delay(1000);
 }
 
 void getDistance()
@@ -97,5 +93,7 @@ void getDistance()
   digitalWrite(trigPin, LOW);
   distanceSensorDuration = pulseIn(echoPin, HIGH);
   distance = distanceSensorDuration * 0.034 / 2;
+  distanceStr = String(distanceSensorDuration * 0.034 / 2, 10);
   Serial.println(distance);
+  Serial.println(distanceStr);
 }
