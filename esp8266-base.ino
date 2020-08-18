@@ -8,6 +8,7 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
 #include <ArduinoJson.h>
+#include <string>
 
 // Fingerprint for demo URL, expires on June 2, 2019, needs to be updated well before this date
 const uint8_t fingerprint[33] = {0x01, 0x7D, 0xC4, 0xAB, 0x36, 0x0F, 0xD2, 0x4E, 0x4F, 0xE4, 0xD6, 0x58, 0x3A, 0x0B, 0x23, 0xBD, 0xE8, 0xB4, 0x19, 0xFE, 0x6A, 0x7E, 0xF0, 0xDA, 0xB6, 0xE6, 0x6D, 0x9B, 0x6D, 0xAF, 0xD0, 0x17};
@@ -37,7 +38,7 @@ void setup() {
   }
   WiFi.mode(WIFI_STA);
   WiFiMulti.addAP("3easdkMrpz58kwq", "thisisthelastpasswordiwanttotype");
-  
+
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 }
@@ -54,12 +55,16 @@ void loop() {
       Serial.print("[HTTPS] POST...\n");
       // start connection and send HTTP header
       getDistance();
+      /*
       StaticJsonBuffer<69> jsonBuffer;
       char json[40];
       sprintf(json, "{'sensor':'distance', 'data':%lf}", distance);
       JsonObject& root = jsonBuffer.parseObject(json);
       String data;
       root.printTo(data);
+      */
+      String s = to_string(42);
+      String data = "{'sensor':'distance', 'data':" + s + ", 'mac':'" + WiFi.macAddress()"'}";
       int httpCode = https.POST(data);
 
       // httpCode will be negative on error
