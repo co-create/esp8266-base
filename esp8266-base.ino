@@ -7,6 +7,8 @@
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
+#include <ArduinoJson.h>
+
 // Fingerprint for demo URL, expires on June 2, 2019, needs to be updated well before this date
 const uint8_t fingerprint[33] = {0x01, 0x7D, 0xC4, 0xAB, 0x36, 0x0F, 0xD2, 0x4E, 0x4F, 0xE4, 0xD6, 0x58, 0x3A, 0x0B, 0x23, 0xBD, 0xE8, 0xB4, 0x19, 0xFE, 0x6A, 0x7E, 0xF0, 0xDA, 0xB6, 0xE6, 0x6D, 0x9B, 0x6D, 0xAF, 0xD0, 0x17};
 ESP8266WiFiMulti WiFiMulti;
@@ -30,8 +32,8 @@ void setup() {
     delay(1000);
   }
   WiFi.mode(WIFI_STA);
-  WiFiMulti.addAP("SSID", "PASSWORD");
-
+  WiFiMulti.addAP("3easdkMrpz58kwq", "thisisthelastpasswordiwanttotype");
+  
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 }
