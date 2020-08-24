@@ -14,12 +14,12 @@ const uint8_t fingerprint[33] = {0x01, 0x7D, 0xC4, 0xAB, 0x36, 0x0F, 0xD2, 0x4E,
 ESP8266WiFiMulti WiFiMulti;
 
 // DIGITAL PINS ESP8266 NODE MCU TEST
-const int trigPin = 5;
-const int echoPin = 4;
+//const int trigPin = 5;
+//const int echoPin = 4;
 
 // DIGITAL PINS ESP01 PROD
-//const int trigPin = 0;
-//const int echoPin = 2;
+const int trigPin = 0;
+const int echoPin = 2;
 
 long distanceSensorDuration = 0;
 double distance = 0;
@@ -39,6 +39,7 @@ void setup() {
   }
   WiFi.mode(WIFI_STA);
   WiFiMulti.addAP("3easdkMrpz58kwq", "thisisthelastpasswordiwanttotype");
+  //WiFiMulti.addAP("byk_phone", "harrypotter2020");
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -92,8 +93,8 @@ void getDistance()
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
   distanceSensorDuration = pulseIn(echoPin, HIGH);
-  distance = distanceSensorDuration * 0.034 / 2;
-  distanceStr = String(distanceSensorDuration * 0.034 / 2, 10);
+  distance = distanceSensorDuration * 0.0135 / 2;
+  distanceStr = String(distanceSensorDuration * 0.0135 / 2, 10);
   Serial.println(distance);
   Serial.println(distanceStr);
 }
